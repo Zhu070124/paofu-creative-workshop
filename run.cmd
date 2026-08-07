@@ -1,37 +1,37 @@
 @echo off
 cd /d "%~dp0"
-
 echo.
 echo ╔══════════════════════════════════════════════╗
-echo ║   🏭 泡芙的创意工坊                           ║
-echo ║  Puff × Hermes × Claude Code               ║
+echo ║   🏭 泡芙的创意工坊 v2                         ║
+echo ║  Workshop Hub + 3 Agent Clients              ║
 echo ╚══════════════════════════════════════════════╝
 echo.
 
-REM 检查 Memory Hub
-echo [1/2] 检查 Memory Hub...
-curl -s http://127.0.0.1:8921/sources >nul 2>&1
-if errorlevel 1 (
-    echo [!] Memory Hub 未启动，正在启动...
-    start "Memory Hub" python "%USERPROFILE%\..\..\..\D:\Users\DELL\clawd\memory-hub\hub.py" serve 8921
-    timeout /t 3 /nobreak >nul
-) else (
-    echo [✓] Memory Hub 已在线
-)
+set HTTP_PORT=9822
+set WS_PORT=9823
+set WORKSHOP_WS=ws://127.0.0.1:%WS_PORT%/ws
+set WORKSHOP_TOKEN=paofu-workshop-2026
 
-REM 检查 Puff
-echo [2/2] 检查 Puff...
-curl -s http://127.0.0.1:8920/ >nul 2>&1
-if errorlevel 1 (
-    echo [!] Puff 未启动，正在启动...
-    start "Puff" python "D:\Users\DELL\clawd\puff\puff.py" serve 8920
-    timeout /t 3 /nobreak >nul
-) else (
-    echo [✓] Puff 已在线
-)
+echo [1/4] Starting Workshop Hub...
+start "Workshop Hub" python server.py %HTTP_PORT% %WS_PORT%
+timeout /t 3 /nobreak >nul
+
+echo [2/4] Starting Puff Agent...
+start "Puff Agent" python agent_client.py puff
+timeout /t 1 /nobreak >nul
+
+echo [3/4] Starting Hermes Agent...
+start "Hermes Agent" python agent_client.py hermes
+timeout /t 1 /nobreak >nul
+
+echo [4/4] Starting Claude Agent...
+start "Claude Agent" python agent_client.py claude
+timeout /t 2 /nobreak >nul
 
 echo.
-echo [✓] 启动工坊服务器...
-start msedge --app="http://127.0.0.1:8922" --window-size=1200,800
-python server.py 8922
+echo [OK] All systems ready!
+echo   Dashboard: http://127.0.0.1:%HTTP_PORT%
+echo.
+start msedge --app="http://127.0.0.1:%HTTP_PORT%" --window-size=1200,800
+
 pause

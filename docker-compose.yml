@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  workshop:
+    build: .
+    ports:
+      - "${HTTP_PORT:-8922}:8922"
+      - "${WS_PORT:-8923}:8923"
+    environment:
+      - WORKSHOP_TOKEN=${WORKSHOP_TOKEN:-paofu-workshop-2026}
+    volumes:
+      - workshop_data:/app
+
+volumes:
+  workshop_data:

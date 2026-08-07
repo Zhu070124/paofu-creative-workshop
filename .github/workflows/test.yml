@@ -1,0 +1,13 @@
+name: Smoke Test
+on: [push, pull_request]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install websockets
+      - run: python -c "compile(open('server.py').read(), 'server.py', 'exec'); print('OK: server.py')"
+      - run: python -c "compile(open('agent_client.py').read(), 'agent_client.py', 'exec'); print('OK: agent_client.py')"

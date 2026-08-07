@@ -6,292 +6,216 @@
 <title>泡芙的创意工坊</title>
 <style>
 :root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #30363d;
-  --text: #e6edf3;
-  --dim: #8b949e;
-  --accent-puff: #f0a8b8;
-  --accent-hermes: #79c0ff;
-  --accent-claude: #d2a8ff;
-  --accent-system: #7ee787;
-  --radius: 8px;
+  --bg: #FFF8F3; --surface: #FFFFFF; --border: #F0E8E0;
+  --text: #5D4E37; --dim: #B5A898;
+  --puff: #F4A7B9; --puff-soft: #FDF0F3;
+  --hermes: #A7C7E7; --hermes-soft: #F0F5FB;
+  --claude: #C3B1E1; --claude-soft: #F6F3FB;
+  --paofu: #F8C06D; --paofu-soft: #FFF8ED;
+  --accent: #F8C06D; --radius: 16px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); height:100vh; display:flex; }
-a { color: var(--accent-hermes); }
 
-/* ── Sidebar ── */
 .sidebar {
-  width: 320px; min-width: 320px;
-  background: var(--surface); border-right:1px solid var(--border);
-  display:flex; flex-direction:column; overflow-y:auto;
+  width: 340px; min-width: 340px; background: var(--surface);
+  border-right: 1px solid var(--border); display:flex; flex-direction:column;
 }
-.sidebar-header {
-  padding: 20px; border-bottom: 1px solid var(--border);
-}
-.sidebar-header h1 { font-size: 18px; font-weight: 600; }
-.sidebar-header .subtitle { color: var(--dim); font-size: 12px; margin-top: 4px; }
+.sidebar-header { padding: 24px 24px 16px; }
+.sidebar-header h1 { font-size: 20px; font-weight: 700; }
+.sidebar-header .subtitle { color: var(--dim); font-size: 12px; margin-top: 2px; }
+.agent-status { padding: 0 24px 12px; display:flex; gap:12px; }
+.agent-dot { font-size: 12px; display:flex; align-items:center; gap:4px; }
+.agent-dot .dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; transition: background 0.3s; }
+.agent-dot .dot.on { background: #7ee787; }
 
-.topic-input-area { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.topic-input-area textarea {
-  width: 100%; background: var(--bg); border: 1px solid var(--border);
-  color: var(--text); border-radius: var(--radius); padding: 10px;
-  font-size: 13px; resize: vertical; min-height: 60px; font-family: inherit;
+.chat-init { flex:1; padding: 0 24px 16px; display:flex; flex-direction:column; border-bottom: 1px solid var(--border); overflow-y:auto; }
+.chat-init label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--dim); letter-spacing: 1px; margin-bottom: 8px; }
+.chat-init textarea {
+  width: 100%; flex: 1; min-height: 80px; background: var(--bg); border: 1.5px solid var(--border);
+  color: var(--text); border-radius: var(--radius); padding: 14px; font-size: 14px;
+  resize: none; font-family: inherit; outline: none; transition: border 0.2s;
 }
-.topic-input-area button {
-  margin-top: 8px; width: 100%; padding: 8px;
-  background: var(--accent-system); color: #000; border: none;
-  border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 13px;
+.chat-init textarea:focus { border-color: var(--accent); }
+.btn-row { display:flex; gap:8px; margin-top: 10px; }
+.btn {
+  padding: 10px 20px; border: none; border-radius: 12px; cursor: pointer;
+  font-weight: 600; font-size: 13px; transition: all 0.2s; font-family: inherit;
 }
-.topic-input-area button:hover { opacity: 0.85; }
-.topic-input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-start { flex:1; background: var(--accent); color: #fff; }
+.btn-start:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.btn-start:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; }
+.btn-stop { background: #FFB3B3; color: #fff; display:none; }
+.btn-stop:hover { background: #FF8C8C; }
 
-/* ── Hub Stats ── */
-.hub-stats { padding: 16px 20px; border-bottom: 1px solid var(--border); }
-.hub-stats h3 { font-size: 12px; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; letter-spacing: 0.5px; }
-.stat-row { display:flex; justify-content:space-between; font-size: 13px; padding: 3px 0; }
-.stat-row .val { font-weight: 600; }
-.stat-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
-.stat-dot.on { background: var(--accent-system); }
-.stat-dot.off { background: #f85149; }
-
-/* ── Rules Editor ── */
-.rules-editor { padding: 16px 20px; flex:1; overflow-y:auto; }
-.rules-editor h3 { font-size: 12px; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; letter-spacing: 0.5px; display:flex; justify-content:space-between; }
-.rules-editor h3 button { background: none; border: 1px solid var(--border); color: var(--dim); padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
-.rules-editor label { display:block; font-size: 12px; color: var(--dim); margin: 8px 0 3px; }
-.rules-editor input, .rules-editor textarea, .rules-editor select {
-  width: 100%; background: var(--bg); border: 1px solid var(--border);
-  color: var(--text); border-radius: 4px; padding: 6px 8px; font-size: 12px; font-family: inherit;
-}
-.agent-toggle { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:12px; }
-.agent-toggle input { width:auto; }
-
-/* ── Main Chat Area ── */
 .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
 .chat-header {
-  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  padding: 20px 28px; background: var(--surface); border-bottom: 1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
 }
-.chat-header .topic { font-size: 14px; font-weight: 600; }
-.chat-header .status { font-size: 11px; color: var(--dim); }
-.round-indicator { font-size: 11px; color: var(--accent-system); }
+.chat-header .topic { font-size: 15px; font-weight: 600; }
+.chat-header .round-badge { font-size: 11px; padding: 4px 12px; border-radius: 20px; background: var(--accent); color: #fff; font-weight: 500; }
 
-.chat-stream { flex:1; overflow-y:auto; padding: 20px 24px; display:flex; flex-direction:column; gap:12px; }
-.user-msg { align-self:flex-end; background: var(--border); padding: 10px 14px; border-radius: 12px 12px 0 12px; max-width: 70%; font-size: 14px; }
-.agent-msg { align-self:flex-start; padding: 10px 14px; border-radius: 12px 12px 12px 0; max-width: 75%; font-size: 14px; line-height: 1.5; }
-.agent-msg .agent-name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
-.agent-msg.puff { background: rgba(240,168,184,0.12); border-left: 2px solid var(--accent-puff); }
-.agent-msg.hermes { background: rgba(121,192,255,0.10); border-left: 2px solid var(--accent-hermes); }
-.agent-msg.claude { background: rgba(210,168,255,0.10); border-left: 2px solid var(--accent-claude); }
-.system-msg { text-align: center; font-size: 11px; color: var(--dim); padding: 4px 0; }
-.system-msg .round-tag { background: var(--surface); border: 1px solid var(--border); padding: 2px 10px; border-radius: 10px; }
-.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color: var(--dim); gap:8px; }
-.empty-state .icon { font-size: 48px; opacity: 0.3; }
+.chat-stream { flex:1; overflow-y:auto; padding: 24px 28px; display:flex; flex-direction:column; gap:14px; }
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color: var(--dim); gap:12px; }
+.empty-state .bubble { width: 80px; height: 80px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 32px; background:linear-gradient(135deg,var(--puff),var(--claude)); }
+.empty-state p { font-size: 14px; }
 
-.chat-input { padding: 12px 24px; border-top: 1px solid var(--border); display:flex; gap:8px; }
-.chat-input input { flex:1; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; font-family: inherit; }
-.chat-input button { padding: 8px 16px; background: var(--accent-hermes); color: #000; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 13px; }
-.chat-input button:hover { opacity: 0.85; }
+.agent-msg { padding: 14px 18px; border-radius: 20px; max-width: 75%; font-size: 14px; line-height: 1.6; }
+.agent-msg .agent-badge { font-size: 11px; font-weight: 700; margin-bottom: 5px; display:flex; align-items:center; gap:6px; }
+.agent-msg .agent-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+.agent-msg.puff { background: var(--puff-soft); align-self:flex-start; border-radius: 20px 20px 20px 4px; } .agent-msg.puff .dot { background: var(--puff); }
+.agent-msg.hermes { background: var(--hermes-soft); align-self:flex-start; border-radius: 20px 20px 20px 4px; } .agent-msg.hermes .dot { background: var(--hermes); }
+.agent-msg.claude { background: var(--claude-soft); align-self:flex-start; border-radius: 20px 20px 20px 4px; } .agent-msg.claude .dot { background: var(--claude); }
+.agent-msg.paofu { background: var(--paofu-soft); align-self:flex-end; border-radius: 20px 20px 4px 20px; border: 2px solid var(--paofu); } .agent-msg.paofu .dot { background: var(--paofu); }
+.system-msg { text-align: center; font-size: 11px; color: var(--dim); padding: 2px 0; }
+.system-msg span { background: var(--surface); border: 1px solid var(--border); padding: 3px 14px; border-radius: 12px; }
+
+.chat-input { padding: 16px 28px; background: var(--surface); border-top: 1px solid var(--border); display:flex; gap:10px; }
+.chat-input input {
+  flex:1; background: var(--bg); border: 1.5px solid var(--border); color: var(--text);
+  border-radius: 14px; padding: 12px 16px; font-size: 14px; font-family: inherit; outline: none;
+}
+.chat-input input:focus { border-color: var(--accent); }
+.chat-input button { padding: 10px 22px; background: var(--accent); color: #fff; border: none; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: inherit; }
+.chat-input button:hover { filter: brightness(1.05); }
 .chat-input button:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
-<!-- ── Sidebar ── -->
 <aside class="sidebar">
   <div class="sidebar-header">
     <h1>🏭 泡芙的创意工坊</h1>
     <div class="subtitle">Puff · Hermes · Claude Code</div>
   </div>
-
-  <div class="topic-input-area">
-    <textarea id="topicInput" placeholder="输入一个话题，让三个 Agent 开始讨论...&#10;比如：「泡芙今天适合做什么」「AI Agent 的未来是什么」「帮我评价这篇散文」"></textarea>
-    <button id="startBtn" onclick="startSession()">▶ 发起群聊</button>
-    <button id="stopBtn" onclick="stopSession()" style="display:none; background:#f85149;">⏹ 结束群聊</button>
+  <div class="agent-status" id="agentStatus">
+    <div class="agent-dot"><span class="dot on" id="dot-paofu"></span>泡芙</div>
+    <div class="agent-dot"><span class="dot" id="dot-puff"></span>Puff</div>
+    <div class="agent-dot"><span class="dot" id="dot-hermes"></span>Hermes</div>
+    <div class="agent-dot"><span class="dot" id="dot-claude"></span>Claude</div>
   </div>
-
-  <div class="hub-stats" id="hubStats">
-    <h3>📊 Memory Hub 状态</h3>
-    <div id="hubContent"><span style="color:var(--dim);font-size:12px">加载中...</span></div>
-  </div>
-
-  <div class="rules-editor" id="rulesEditor">
-    <h3>⚙ 群聊规则 <button onclick="saveRules()">保存</button></h3>
-    <label>最大轮次</label>
-    <input type="number" id="ruleMaxRounds" value="3" min="1" max="10">
-    <label>回复长度上限</label>
-    <input type="number" id="ruleMaxLen" value="300" min="50" max="1000">
-    <label>规则列表（每行一条）</label>
-    <textarea id="ruleNorms" rows="4"></textarea>
-    <label style="margin-top:10px;font-weight:600;">Agent 开关</label>
-    <div id="agentToggles"></div>
+  <div style="padding:16px 24px; color:var(--dim); font-size:12px; border-bottom:1px solid var(--border);">
+    在下方输入框发言，Agent 自动回应
   </div>
 </aside>
 
-<!-- ── Main Chat ── -->
 <main class="main">
   <div class="chat-header">
-    <span class="topic" id="chatTopic">选择一个话题开始</span>
-    <span class="round-indicator" id="roundInfo"></span>
+    <span class="topic" id="chatTopic">等待 Agent 连接…</span>
+    <span class="round-badge" id="roundInfo" style="display:none"></span>
   </div>
   <div class="chat-stream" id="chatStream">
     <div class="empty-state">
-      <div class="icon">💬</div>
-      <div>输入话题，三个 Agent 开始讨论</div>
+      <div class="bubble">💬</div>
+      <p>在下方输入框开始聊天</p>
     </div>
   </div>
   <div class="chat-input">
-    <input type="text" id="msgInput" placeholder="插话..." disabled onkeydown="if(event.key==='Enter')sendMessage()">
-    <button id="sendBtn" disabled onclick="sendMessage()">发送</button>
+    <input type="text" id="msgInput" placeholder="说点什么..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button id="sendBtn" onclick="sendMessage()">发送</button>
   </div>
 </main>
 
 <script>
-// ── State ──
-let sessionId = null;
-let eventSource = null;
-let rules = {};
+let sessionActive = false, eventSource = null, sseRetries = 0;
 
-// ── Init ──
-async function init() {
-  await loadRules();
-  await loadHubStats();
-  setInterval(loadHubStats, 10000);
-}
-async function loadRules() {
-  const r = await fetch('/api/rules').then(r=>r.json());
-  rules = r;
-  document.getElementById('ruleMaxRounds').value = r.maxRounds || 3;
-  document.getElementById('ruleMaxLen').value = r.maxResponseLength || 300;
-  document.getElementById('ruleNorms').value = (r.groupNorms || []).join('\n');
-  // Agent toggles
-  const agents = r.agents || {};
-  const el = document.getElementById('agentToggles');
-  el.innerHTML = Object.entries(agents).map(([name, cfg]) => `
-    <div class="agent-toggle">
-      <input type="checkbox" id="agent_${name}" ${cfg.enabled !== false ? 'checked' : ''} onchange="rules.agents['${name}'].enabled=this.checked">
-      <span style="color:var(--accent-${name})">●</span>
-      <span>${cfg.role || name}</span>
-    </div>
-  `).join('');
-}
-async function loadHubStats() {
-  try {
-    const stats = await fetch('/api/hub/stats').then(r=>r.json());
-    const src = stats.sources || {};
-    document.getElementById('hubContent').innerHTML = `
-      <div class="stat-row"><span>Memory Hub</span><span class="val"><span class="stat-dot ${stats.connected?'on':'off'}"></span>${stats.connected?'在线':'离线'}</span></div>
-      ${Object.entries(src).map(([s,c])=>`<div class="stat-row"><span>${s}</span><span class="val">${typeof c==='number'?c+'条':c}</span></div>`).join('')}
-      ${!Object.keys(src).length ? '<div class="stat-row" style="color:var(--dim)">暂无数据</div>' : ''}
-    `;
-  } catch(e) {}
-}
-async function saveRules() {
-  const updated = {
-    maxRounds: parseInt(document.getElementById('ruleMaxRounds').value) || 3,
-    maxResponseLength: parseInt(document.getElementById('ruleMaxLen').value) || 300,
-    groupNorms: document.getElementById('ruleNorms').value.split('\n').filter(s=>s.trim()),
-    agents: rules.agents
-  };
-  await fetch('/api/rules', {method:'PUT', body: JSON.stringify(updated)});
-  rules = updated;
-}
-
-// ── Session ──
-async function startSession() {
-  const topic = document.getElementById('topicInput').value.trim();
-  if (!topic) return;
-  document.getElementById('startBtn').disabled = true;
-  document.getElementById('stopBtn').style.display = 'block';
-
-  const r = await fetch('/api/session/start', {
-    method: 'POST', body: JSON.stringify({topic})
-  }).then(r=>r.json());
-  sessionId = r.session_id;
-  document.getElementById('chatTopic').textContent = topic;
-  document.getElementById('chatStream').innerHTML = '';
-  document.getElementById('msgInput').disabled = false;
-  document.getElementById('sendBtn').disabled = false;
-
-  connectSSE();
-}
-
-function stopSession() {
-  if (sessionId) fetch(`/api/session/${sessionId}/stop`, {method:'POST'});
-  if (eventSource) eventSource.close();
-  sessionId = null;
-  document.getElementById('startBtn').disabled = false;
-  document.getElementById('stopBtn').style.display = 'none';
-  document.getElementById('msgInput').disabled = true;
-  document.getElementById('sendBtn').disabled = true;
-  document.getElementById('roundInfo').textContent = '';
-}
-
-function sendMessage() {
-  const input = document.getElementById('msgInput');
-  const content = input.value.trim();
-  if (!content || !sessionId) return;
-  input.value = '';
-
-  appendMessage({type:'user_message', agent:'user', content});
-  fetch(`/api/session/${sessionId}/message`, {
-    method: 'POST', body: JSON.stringify({content})
-  });
-}
-
-// ── SSE ──
 function connectSSE() {
   if (eventSource) eventSource.close();
-  eventSource = new EventSource(`/api/session/${sessionId}/stream`);
+  eventSource = new EventSource('/api/stream');
 
   eventSource.addEventListener('history', e => {
-    const msgs = JSON.parse(e.data);
-    document.getElementById('chatStream').innerHTML = '';
-    msgs.forEach(m => appendMessage({type: m.role+'_message', agent: m.role, content: m.content}));
+    try {
+      document.getElementById('chatStream').innerHTML = '';
+      JSON.parse(e.data).forEach(m => appendMsg({
+        type: 'agent_message', agent: m.role, content: m.content
+      }));
+    } catch(_){}
   });
-
   eventSource.addEventListener('message', e => {
-    const msg = JSON.parse(e.data);
-    if (msg.type === 'agent_message') {
-      appendMessage(msg);
-    } else if (msg.type === 'round_start') {
-      document.getElementById('roundInfo').textContent = `第 ${msg.round} 轮`;
-    } else if (msg.type === 'round_end') {
-      appendMessage({type:'system', agent:'system', content:`— 第 ${msg.round} 轮结束 · ${msg.response_count} 个回复 —`});
-    } else if (msg.type === 'session_complete') {
-      appendMessage({type:'system', agent:'system', content:`✓ 讨论结束 · 共 ${msg.total_rounds} 轮`});
-      document.getElementById('roundInfo').textContent = '已完成';
-      document.getElementById('startBtn').disabled = false;
-      document.getElementById('stopBtn').style.display = 'none';
-    }
+    try {
+      const m = JSON.parse(e.data);
+      if (m.type === 'agent_joined') {
+        document.getElementById(`dot-${m.agent}`)?.classList.add('on');
+        appendMsg({type:'system', content:`${label(m.agent)} 已加入`});
+      } else if (m.type === 'agent_left') {
+        document.getElementById(`dot-${m.agent}`)?.classList.remove('on');
+        appendMsg({type:'system', content:`${label(m.agent)} 已离开`});
+      } else if (m.type === 'session_start') {
+        sessionActive = true;
+        document.getElementById('chatTopic').textContent = m.topic;
+        document.getElementById('chatStream').innerHTML = '';
+      } else if (m.type === 'user_message') {
+        appendMsg({type:'agent_message', agent:'paofu', content:m.content});
+      } else if (m.type === 'agent_message') {
+        appendMsg(m);
+      } else if (m.type === 'round_start') {
+        document.getElementById('roundInfo').style.display = 'block';
+        document.getElementById('roundInfo').textContent = `第 ${m.round} 轮`;
+        appendMsg({type:'system', content:`— 第 ${m.round} 轮 —`});
+      } else if (m.type === 'session_complete') {
+        sessionActive = false;
+        appendMsg({type:'system', content:'✓ 讨论结束'});
+        document.getElementById('roundInfo').style.display = 'none';
+      }
+    } catch(_){}
   });
+  eventSource.onerror = () => {
+    if (eventSource.readyState === EventSource.CLOSED && sseRetries < 5) {
+      sseRetries++; setTimeout(connectSSE, 3000);
+    }
+  };
+  eventSource.onopen = () => { sseRetries = 0; };
 }
 
-function appendMessage(msg) {
-  const el = document.getElementById('chatStream');
-  const div = document.createElement('div');
-  const agent = msg.agent || 'system';
+async function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const c = input.value.trim();
+  if (!c) return;
+  input.value = '';
 
-  if (msg.type === 'user_message' || agent === 'user') {
-    div.className = 'user-msg';
-    div.textContent = msg.content;
-  } else if (msg.type === 'agent_message') {
-    div.className = `agent-msg ${agent}`;
-    const label = {'puff':'Puff 🩷','hermes':'Hermes 💙','claude':'Claude 💜'}[agent] || agent;
-    div.innerHTML = `<div class="agent-name">${label}</div>${escapeHtml(msg.content)}`;
-  } else {
-    div.className = 'system-msg';
-    div.innerHTML = `<span class="round-tag">${msg.content}</span>`;
+  // Auto-start session on first message
+  if (!sessionActive) {
+    await fetch('/api/session/start', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({topic:c})});
+    sessionActive = true;
   }
-  el.appendChild(div);
-  el.scrollTop = el.scrollHeight;
+
+  fetch('/api/message', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:c})});
 }
+function appendMsg(m) {
+  const el = document.getElementById('chatStream'), div = document.createElement('div');
+  const a = m.agent||'system';
+  if (m.type==='agent_message'||a==='paofu') {
+    div.className = `agent-msg ${a}`;
+    div.innerHTML = `<div class="agent-badge"><span class="dot"></span>${label(a)}</div>${esc(m.content)}`;
+  } else if (m.type==='user') {
+    div.className = `agent-msg paofu`;
+    div.innerHTML = `<div class="agent-badge"><span class="dot"></span>${label('paofu')}</div>${esc(m.content)}`;
+  } else { div.className='system-msg'; div.innerHTML=`<span>${m.content}</span>`; }
+  el.appendChild(div); el.scrollTop=el.scrollHeight;
+}
+function label(a) { return {puff:'Puff 🩷', hermes:'Hermes 💙', claude:'Claude 💜', paofu:'泡芙 🧡'}[a]||a; }
+function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-function escapeHtml(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+// Periodic state check
+setInterval(async () => {
+  try {
+    const s = await fetch('/api/state').then(r=>r.json());
+    ['puff','hermes','claude'].forEach(name => {
+      document.getElementById(`dot-${name}`)?.classList.toggle('on', s.agents?.includes(name));
+    });
+    if (s.active && !sessionActive) {
+      sessionActive = true;
+      document.getElementById('chatTopic').textContent = s.topic;
+      document.getElementById('startBtn').disabled = true;
+      document.getElementById('stopBtn').style.display = 'block';
+      document.getElementById('msgInput').disabled = false;
+      document.getElementById('sendBtn').disabled = false;
+    }
+  } catch(_) {}
+}, 3000);
 
-init();
+connectSSE();
 </script>
 </body>
 </html>

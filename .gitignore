@@ -2,3 +2,6 @@ __pycache__/
 data/sessions/
 *.pyc
 .DS_Store
+workshop.db
+workshop.log
+*.db-journal
